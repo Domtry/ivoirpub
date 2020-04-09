@@ -1,0 +1,272 @@
+{% extends 'dashboard/base.html' %}
+{% block page_title %}Creation{% endblock %}
+{% load static %}
+{% block page_container %}
+    <!-- HEADER MOBILE-->
+    <header class="header-mobile d-block d-lg-none">
+        <div class="header-mobile__bar">
+            <div class="container-fluid">
+                <div class="header-mobile-inner">
+                    <a class="logo" href="index.html">
+                        <img src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin" />
+                    </a>
+                    <button class="hamburger hamburger--slider" type="button">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar-mobile">
+            <div class="container-fluid">
+                <ul class="navbar-mobile__list list-unstyled">
+                    <li>
+                        <a class="js-arrow" href="{% url 'dashboard_sp:home' %}"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                    </li>
+                    <li class="active has-sub">
+                        <a href="{% url 'dashboard_sp:campagne' %}"><i class="fas fa-table"></i>Campagne</a>
+                    </li>
+                    <li>
+                        <a href="chart.html"><i class="fas fa-chart-bar"></i>Bilan</a>
+                    </li>
+                    <li>
+                        <a href="table.html"><i class="zmdi zmdi-settings"></i>Parametre</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- END HEADER MOBILE-->
+
+    <!-- MENU SIDEBAR-->
+    <aside class="menu-sidebar d-none d-lg-block">
+        <div class="logo">
+            <a href="#">
+                <img src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin" />
+            </a>
+        </div>
+        <div class="menu-sidebar__content js-scrollbar1">
+            <nav class="navbar-sidebar">
+                <ul class="list-unstyled navbar__list">
+                    <li>
+                        <a class="js-arrow" href="{% url 'dashboard_sp:home' %}"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                    </li>
+                    <li class="active has-sub">
+                        <a href="{% url 'dashboard_sp:campagne' %}"><i class="fas fa-table"></i>Campagne</a>
+                    </li>
+                    <li>
+                        <a href="chart.html"><i class="fas fa-chart-bar"></i>Bilan</a>
+                    </li>
+                    <li>
+                        <a href="table.html"><i class="zmdi zmdi-settings"></i>Parametre</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+    <!-- END MENU SIDEBAR-->
+
+    <!-- PAGE CONTAINER-->
+    <div class="page-container">
+        <!-- HEADER DESKTOP-->
+        <header class="header-desktop">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+                    <div class="header-wrap">
+                        <div></div>
+                        <div class="header-button">
+                            <div class="noti-wrap">
+                                <div class="noti__item js-item-menu">
+                                    <i class="zmdi zmdi-notifications"></i>
+                                    <span class="quantity">3</span>
+                                    <div class="notifi-dropdown js-dropdown">
+                                        <div class="notifi__title">
+                                            <p>You have 3 Notifications</p>
+                                        </div>
+                                        <div class="notifi__item">
+                                            <div class="bg-c1 img-cir img-40">
+                                                <i class="zmdi zmdi-email-open"></i>
+                                            </div>
+                                            <div class="content">
+                                                <p>You got a email notification</p>
+                                                <span class="date">April 12, 2018 06:50</span>
+                                            </div>
+                                        </div>
+                                        <div class="notifi__item">
+                                            <div class="bg-c2 img-cir img-40">
+                                                <i class="zmdi zmdi-account-box"></i>
+                                            </div>
+                                            <div class="content">
+                                                <p>Your account has been blocked</p>
+                                                <span class="date">April 12, 2018 06:50</span>
+                                            </div>
+                                        </div>
+                                        <div class="notifi__item">
+                                            <div class="bg-c3 img-cir img-40">
+                                                <i class="zmdi zmdi-file-text"></i>
+                                            </div>
+                                            <div class="content">
+                                                <p>You got a new file</p>
+                                                <span class="date">April 12, 2018 06:50</span>
+                                            </div>
+                                        </div>
+                                        <div class="notifi__footer">
+                                            <a href="#">All notifications</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="account-wrap">
+                                <div class="account-item clearfix js-item-menu">
+                                    <div class="image">
+                                        <img src="{% static 'dashboard/images/icon/avatar-01.jpg' %}" alt="John Doe" />
+                                    </div>
+                                    <div class="content">
+                                        <a class="js-acc-btn" href="#">{{username}}</a>
+                                    </div>
+                                    <div class="account-dropdown js-dropdown">
+                                        <div class="info clearfix">
+                                            <div class="image">
+                                                <a href="#">
+                                                    <img src="{% static 'dashboard/images/icon/avatar-01.jpg' %}" alt="John Doe" />
+                                                </a>
+                                            </div>
+                                            <div class="content">
+                                                <h5 class="name">
+                                                    <a href="#">{{username}}</a>
+                                                </h5>
+                                                <span class="email">{{email}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="account-dropdown__body">
+                                            <div class="account-dropdown__item">
+                                                <a href="#"><i class="zmdi zmdi-account"></i>Compte</a>
+                                            </div>
+                                            <div class="account-dropdown__item">
+                                                <a href="#"><i class="zmdi zmdi-settings"></i>Parametre</a>
+                                            </div>
+                                        </div>
+                                        <div class="account-dropdown__footer">
+                                            <a href="{% url 'dashboard_sp:disconnect' %}"><i class="zmdi zmdi-power"></i>Se Déconnecter</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- HEADER DESKTOP-->
+
+        <!-- MAIN CONTENT-->
+        <div class="main-content">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+                    <div class="col-md-12">
+                        <!-- DATA TABLE -->
+                        <div class="user-data m-b-30">
+                            <h3 class="title-3 m-b-30">
+                                <i class="zmdi zmdi-account-calendar"></i>{{campagne.title}}</h3>
+                            <div class="card-body card-block">
+                                <p>
+                                    Description<br>
+                                    <strong>{{campagne.description}}</strong></p>
+                                <p>
+                                    Date de démarrage<br>
+                                    <strong>{{campagne.start_date}}</strong></p>
+                                <p>
+                                    Date de cloture<br>
+                                    <strong>{{campagne.close_date}}</strong></p>
+                                <p>
+                                    Statue de la campagne<br>
+                                    <strong>{{campagne.state}}</strong></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1" data-toggle="modal" data-target="#mediumModal">
+                                    <i class="zmdi zmdi-plus"></i>Ajouter un objectif</button>
+                            </div>
+                        </div>
+                        <!-- END DATA TABLE -->
+                        <!-- DATA TABLE -->
+                        <div class="user-data m-b-30">
+                            <h3 class="title-3 m-b-30">
+                                Listes des objectifs</h3>
+                                <div class="table-responsive table-data">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <td>Titre</td>
+                                                <td>Description</td>
+                                                <td>Statu</td>
+                                                <td>Options</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in data_objectif %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="table-data__info">
+                                                            <h6>{{item.title}}</h6>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="table-data__info">
+                                                            <h6>{{item.description}}</h6>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="role admin">{{item.is_publish}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="more">
+                                                            <i class="zmdi zmdi-edit"></i>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END DATA TABLE -->
+                    </div>
+                </div>
+            </div>
+             <!-- modal medium -->
+            <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="mediumModalLabel">
+                                Ajout d'un nouveau objectif
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body card-block">
+                                <form action="" method="post">
+                                    {% csrf_token %} 
+                                    {% for field in form %}
+                                        <div class="form-group">
+                                            {{ field.errors }}
+                                            {{ field.label_tag }} {{ field }}
+                                        </div>
+                                    {% endfor %}
+                                    <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Ajouter</button>
+                                </form> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end modal medium -->
+        </div>
+        <!-- END MAIN CONTENT-->
+        <!-- END PAGE CONTAINER-->
+    </div>
+{% endblock %}

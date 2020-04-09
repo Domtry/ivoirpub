@@ -1,0 +1,28 @@
+{%  extends 'dashboard/base.html' %}
+{% block page_title %}Configuration{% endblock %}
+{% load static %}
+{% block page_container %}
+<div class="page-content--bge5">
+    <div class="container">
+        <div class="login-wrap">
+            <div class="login-content">
+                <div class="login-logo">
+                    <h3>App Config</h3>
+                </div>
+                <div class="login-form">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                {{ field.errors }}
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% endfor %}
+                        <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
