@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.db.utils import IntegrityError
 from dashboard import models
 from dashboard import forms
-from packages.fb_graph_api import FbGraphAPI
+from django.http import JsonResponse
+from packages.campagne_ctrl import CampagneCtrl
+
 
 # Create your views here.
 def login_page(request):
@@ -169,9 +171,175 @@ def forget_password_page(request):
     return render(request, 'dashboard/forget_password.html')
 
 
+
+def edit_login_page(request):
+    if 'logged_user_id' in request.session :
+        logged_user_id = request.session['logged_user_id']
+        email = logged_user_id['email']
+        username = logged_user_id['username']
+        context = {'username':username, 'email':email}
+
+        if request.method == 'POST':
+            form = forms.RegisterForm(request.POST)
+            if form.is_valid():
+                account = models.Account.objects.get(email=email)
+                account.username = form.cleaned_data['username']
+                account.email = form.cleaned_data['email']
+                account.password = form.cleaned_data['password']
+                account.save()
+                user_auth = account
+                session_data = {'username':user_auth.username, 'email':user_auth.email, 'user_id': user_auth.id}
+                request.session['logged_user_id'] = session_data
+                context['success'] = "Votre compte a bien été modifié "
+                return render(request, 'dashboard/edit_login.html', context)
+            else :
+                context['form']= form
+                return render(request, 'dashboard/edit_login.html', context)
+
+        form = forms.RegisterForm(initial={
+            'username': username,
+            'email': email
+        })
+        context['form']= form
+        return render(request, 'dashboard/edit_login.html', context)
+    else :
+        redirect('/login')
+
+
+
+def edit_facebook_app(request):
+    if 'logged_user_id' in request.session :
+        logged_user_id = request.session['logged_user_id']
+        email = logged_user_id['email']
+        username = logged_user_id['username']
+        context = {'username':username, 'email':email}
+        account = models.Account.objects.get(id=logged_user_id['user_id'])
+
+        if request.method == 'POST':
+            form = forms.FacebookAccessForm(request.POST)
+            if form.is_valid():
+                fb_app_data = models.Fb_Access.objects.filter(account=account)
+                fb_access = fb_app_data[0]
+                fb_access.user_lg_token = form.cleaned_data['user_lg_token']
+                fb_access.app_secret_key = form.cleaned_data['app_secret_key']
+                fb_access.app_id = form.cleaned_data['app_id']
+                fb_access.save()
+                context['form'] = form
+                context['success'] = "Votre compte a bien été modifié "
+                return render(request, 'dashboard/edit_facebk_app.html', context)
+            else :
+                context['form'] = form
+                return render(request, 'dashboard/edit_facebk_app.html', context)
+
+        fb_app_data = models.Fb_Access.objects.filter(account=account)
+        fb_access = fb_app_data[0]
+        form = forms.FacebookAccessForm(initial={
+            'user_lg_token': fb_access.user_lg_token,
+            'app_secret_key': fb_access.app_secret_key,
+            'app_id': fb_access.app_id,
+            'account': account
+        })
+        context['form']= form
+        return render(request, 'dashboard/edit_facebk_app.html', context)
+    else:
+        pass
+
+
+
+def edit_facebook_page(request, page_id):
+    if 'logged_user_id' in request.session :
+        logged_user_id = request.session['logged_user_id']
+        email = logged_user_id['email']
+        username = logged_user_id['username']
+        context = {'username':username, 'email':email}
+        page_id = int(page_id)
+        fb_page = models.Fb_Page.objects.get(id=page_id)
+
+        form = forms.FacebookPageForm(initial={
+            'title':fb_page.title,
+            'page_id':fb_page.page_id,
+            'page_lg_tk':fb_page.page_lg_tk,
+        })
+
+        if request.method == 'POST':
+            form = forms.FacebookPageForm(request.POST)
+            if form.is_valid() :
+                fb_page.title = form.cleaned_data['title']
+                fb_page.page_id = form.cleaned_data['page_id']
+                fb_page.page_lg_tk = form.cleaned_data['page_lg_tk']
+                fb_page.save()
+                context['form'] = form
+                context['success'] = "Les parametre ont bien été modifié "
+                return render(request, 'dashboard/edit_facebk_page.html', context)
+            else :
+                context['form'] = form
+                return render(request, 'dashboard/edit_facebk_page.html', context)
+        else :
+            context['form'] = form
+            return render(request, 'dashboard/edit_facebk_page.html', context)
+    else :
+        return redirect('/login')
+
+
+
+def app_config_page(request):
+    if 'logged_user_id' in request.session :
+        logged_user_id = request.session['logged_user_id']
+        email = logged_user_id['email']
+        username = logged_user_id['username']
+        account = models.Account.objects.get(id=logged_user_id['user_id'])
+        fb_data = models.Fb_Access.objects.filter(account=account)
+        fb_page = models.Fb_Page.objects.filter(fb_access=fb_data[0])
+        context = {
+            'username':username, 
+            'email':email, 
+            'data':account, 
+            'fb_data': fb_data[0],
+            'fb_page': fb_page}
+
+        if request.method == 'POST':
+            form = forms.FacebookPageForm(request.POST)
+            if form.is_valid() :
+                fb_page = models.Fb_Page(
+                    title=form.cleaned_data['title'],
+                    page_id=form.cleaned_data['page_id'],
+                    page_lg_tk=form.cleaned_data['page_lg_tk'],
+                    fb_access=fb_data[0]
+                )
+                fb_page.save()
+                form = forms.FacebookPageForm()
+                context['form'] = form
+                return render(request, 'dashboard/config.html', context)
+            else :
+                context['form'] = form
+                return render(request, 'dashboard/config.html', context)
+                
+        form = forms.FacebookPageForm()
+        context['form'] = form
+        return render(request, 'dashboard/config.html', context)
+    else :
+        redirect('/login')
+
+
 def disconnect(request):
     if 'logged_user_id' in request.session :
         del request.session['logged_user_id']
         return redirect('/login')
+    else:
+        return redirect('/login')
+
+
+def campagne_control_dashboard(request):
+    if 'logged_user_id' in request.session :
+        logged_user_id = request.session['logged_user_id']
+        email = logged_user_id['email']
+        username = logged_user_id['username']
+        account = models.Account.objects.get(id=logged_user_id['user_id'])
+        resp = CampagneCtrl.operation_posted(account)        
+        data = {
+            "statu":"success",
+            "message": resp
+            }
+        return JsonResponse(data)
     else:
         return redirect('/login')

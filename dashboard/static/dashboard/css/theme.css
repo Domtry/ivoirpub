@@ -48,6 +48,13 @@ Notes:	decreasing heading by 0.4em with every subsequent heading level
     box-sizing: border-box;
 }
 
+
+.hidden{
+    display: none;
+    visibility: hidden;
+}
+
+
 ul {
     margin: 0;
 }

@@ -1,7 +1,7 @@
 import json
 import facebook
 import requests
-
+from dashboard.models import Fb_Access, Fb_Page
 
 class FbGraphAPI(object):
     
@@ -14,8 +14,16 @@ class FbGraphAPI(object):
     APP_SECRET_KEY = '' # jeton d'acces de l'application
 
 
-    def __init__(self, access_token=None) :
+    def __init__(self, account) :
         super().__init__()
+        data = Fb_Access.objects.filter(account=account)
+        fb_access = data[0]
+        data_page = Fb_Page.objects.filter(fb_access=fb_access)
+        fb_page = data_page[0]
+        FbGraphAPI.APP_ID = fb_access.app_id
+        FbGraphAPI.USER_TOKEN = fb_access.user_lg_token
+        FbGraphAPI.PAGE_ID = fb_page.page_id
+        FbGraphAPI.PAGE_LG_TK = fb_page.page_lg_tk
         self.obj_graph = facebook.GraphAPI(FbGraphAPI.PAGE_LG_TK)
     
 
@@ -99,7 +107,7 @@ class FbGraphAPI(object):
         result = obj.fb_get_page_detail()
         print(result)
         """
-        resp = self.obj_graph.get_object("/me/accounts")['data']
+        resp = self.obj_graph.get_object("/me/")
         return resp
 
 

@@ -204,4 +204,31 @@ class ObjectifForm(ModelForm):
 
 class FacebookPageForm(ModelForm):
     class Meta:
-        pass
+        model = models.Fb_Page
+        fields = ('title', 'page_id', 'page_lg_tk')
+        labels = {
+            'title': "Page Title",
+            'page_id': 'Page ID',
+            'page_lg_tk': 'Page long Token',
+        }
+        widgets = {
+            'title': TextInput(
+                attrs={
+                'class': "au-input au-input--full",
+                "placeholder":"title of page"
+                }
+            ),
+            'page_id': TextInput(
+                attrs={
+                'class': "au-input au-input--full",
+                "placeholder":"Page id"
+                }
+            ),
+            'page_lg_tk': TextInput(
+                attrs={
+                'class': "au-input au-input--full",
+                "placeholder":"long token"
+                }
+            ),
+        }
+        exclude = ('fb_access',)
