@@ -25,9 +25,8 @@ SECRET_KEY = 'zk!j8)#*9a71it#cqsx^g)znjlc_$t)!cpmhe8ia!^rqjrwva9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-
+ALLOWED_HOSTS = ['192.168.1.102','36c1bd59.ngrok.io', '127.0.0.1']
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,6 +39,8 @@ INSTALLED_APPS = [
     'IvoirPub',
     'dashboard',
 ]
+
+APPEND_SLASH = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -100,6 +101,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+DATE_INPUT_FORMATS = ['%d %B %Y', '%d %B, %Y', '%d/%m/%y']
+
+DATE_FORMAT=['%d %B %Y', '%d %B, %Y', '%d/%m/%y']
+
+DATETIME_FORMAT=['%d-%m-%Y %H:%M:%S']
+
+TIME_INPUT_FORMATS=['%H:%M']
 
 
 # Internationalization

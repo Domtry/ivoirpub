@@ -1,30 +1,28 @@
 import json
 import facebook
 import requests
-from dashboard.models import Fb_Access, Fb_Page
+from dashboard.models import FacebookUser, FPage
 
 class FbGraphAPI(object):
     
-    APP_ID = '' # Identifiant de l'application
+    APP_ID = '1044498892617544' # Identifiant de l'application
+    APP_SECRET_KEY = '45c550bd27b161a482759df4d37dc838' # jeton d'acces de l'application
+
     PAGE_ID = ''  # Identifiant de la page facebook
     PAGE_TOKEN = '' # jeton d'acces page 
     USER_TOKEN = '' # jeton d'acces utilisateur 
-    PAGE_LG_TK = '' # long jeton d'acces page 
-    USER_LG_TK = '' # long jeton d'acces utilisateur 
-    APP_SECRET_KEY = '' # jeton d'acces de l'application
 
 
     def __init__(self, account) :
         super().__init__()
-        data = Fb_Access.objects.filter(account=account)
-        fb_access = data[0]
-        data_page = Fb_Page.objects.filter(fb_access=fb_access)
-        fb_page = data_page[0]
-        FbGraphAPI.APP_ID = fb_access.app_id
-        FbGraphAPI.USER_TOKEN = fb_access.user_lg_token
+        fb_access = FacebookUser.objects.filter(account=account)[0]
+        fb_page = FPage.objects.filter(fb_user=fb_access)[0]
+
+        FbGraphAPI.USER_TOKEN = fb_access.access_token
         FbGraphAPI.PAGE_ID = fb_page.page_id
-        FbGraphAPI.PAGE_LG_TK = fb_page.page_lg_tk
-        self.obj_graph = facebook.GraphAPI(FbGraphAPI.PAGE_LG_TK)
+        FbGraphAPI.PAGE_TOKEN = fb_page.access_token
+        self.obj_graph = facebook.GraphAPI(FbGraphAPI.PAGE_TOKEN)
+        
     
 
     def fb_get_all_posted_visitors(self, id):
@@ -124,24 +122,15 @@ class FbGraphAPI(object):
         return page_token
 
 
-    def fb_generate_long_access_tk(self):
-        # requete permettant de recuperer le jeton d'acces de longue durée
-        token = [FbGraphAPI.USER_TOKEN, FbGraphAPI.PAGE_TOKEN]
-        long_access_tk = []
-        for tk in token:
-            access_tk_url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={}&client_secret={}&fb_exchange_token={}".format(FbGraphAPI.APP_ID, FbGraphAPI.APP_SECRET_KEY, tk)
-            r = requests.get(access_tk_url)
-            # formatage de la données en format json
-            access_token_info = r.json()
-            # recuperation du jeton de longue durée
-            long_access_tk.append(access_token_info['access_token'])
-        return long_access_tk
 
-
-    def fb_recup_long_access_token(self):
-        long_token_generate = self.fb_generate_long_access_tk()
-        FbGraphAPI.PAGE_LG_TK = long_token_generate[1]
-        FbGraphAPI.USER_LG_TK = long_token_generate[0]
+    @classmethod
+    def fb_generate_long_access_tk(cls, token):
+        access_tk_url = f"https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={FbGraphAPI.APP_ID}&client_secret={FbGraphAPI.APP_SECRET_KEY}&fb_exchange_token={token}"
+        r = requests.get(access_tk_url)
+        # formatage de la données en format json
+        access_token_info = r.json()
+        # long_access_tk = access_token_info['access_token']
+        return access_token_info
 
 
 

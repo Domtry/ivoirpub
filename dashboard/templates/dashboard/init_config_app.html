@@ -6,23 +6,188 @@
     <div class="container">
         <div class="login-wrap">
             <div class="login-content">
-                <div class="login-logo">
-                    <h3>App Config</h3>
+                <div id="select_view" class="row card-body card-block">
+                    <div class="login-logo">
+                        <h3>Configuration de votre application</h3>
+                        <br>
+                        <p class="text-sm-center">
+                            Veuillez cocher vos espaces publicitaire et laissez nous occuper du reste pour vous  
+                        </p>
+                    </div>
+                    <div class="mx-auto d-block col center-box">
+                        <img class="rounded-circle mx-auto d-block" src="{% static 'dashboard/images/Facebook-icon-1.png' %}" alt="Card image cap">
+                        <h5 class="text-sm-center mt-2 mb-1">Facebook</h5>
+                        <br>
+                        <label class="switch switch-3d switch-info mr-3">
+                            <input id="fb_check" type="checkbox" class="switch-input" checked>
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </div>
+                    <div class="mx-auto d-block col center-box">
+                        <img class="rounded-circle mx-auto d-block" src="{% static 'dashboard/images/Instagram-icone-1.png' %}" alt="Card image cap">
+                        <h5 class="text-sm-center mt-2 mb-1">Instagram</h5>
+                        <br>
+                        <label class="switch switch-3d switch-info mr-3">
+                            <input id="insta_check" disabled type="checkbox" class="switch-input" check="false">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </div>
+                    <div class="mx-auto d-block col center-box">
+                        <img class="rounded-circle d-block" src="{% static 'dashboard/images/Twitter-icon-1.png' %}" alt="Card image cap">
+                        <h5 class="text-sm-center mt-2 mb-1">Twitter</h5>
+                        <br>
+                        <label class="switch switch-3d switch-info mr-3">
+                            <input id="twitt_check" disabled type="checkbox" class="switch-input" check="false">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </div>
+                    <button id="btn_next" class="au-btn au-btn--block au-btn--blue" type="button">Continuer</button>
                 </div>
-                <div class="login-form">
-                    <form action="" method="post">
-                        {% csrf_token %}
-                        {% for field in form %}
-                            <div class="form-group">
-                                {{ field.errors }}
-                                {{ field.label_tag }} {{ field }}
-                            </div>
-                        {% endfor %}
-                        <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
-                    </form>
+                <div id="page_view" class="card-body card-block block-hidden">
+                    {% csrf_token %}
+                    <div class="login-logo">
+                        <h3>Configuration de votre application</h3>
+                        <br>
+                        <p class="text-sm-center">
+                            Veuillez verifier bien vos informations avant la validation 
+                        </p>
+                    </div>
+                    <div class="row" id="page_fb"></div>
+                    <div class="row form-actions form-group">
+                        <div class="col-md-3">
+                            <button id="back_view" class="btn btn-outline-link btn-sm btn-block"> < Retour</button>
+                        </div>
+                        <span class="col-md-2"></span>
+                        <div class="col-md-7">
+                            <button id="valid_data" class="btn btn-outline-success btn-sm btn-block" type="button">Enregistré votre configuration</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="final_view" class="card-body card-block block-hidden">
+                    <div class="login-logo">
+                        <h3>Configuration de votre application</h3>
+                        <br>
+                        <p class="text-sm-center">
+                            bravo vous avez terminé la configuration de votre application.Vous etes maintenant pret pour créer vos differentes campagnes
+                        </p>
+                    </div>
+                    <a href="{% url 'dashboard_sp:home' %}" class="btn btn-outline-success btn-sm btn-block">
+                        <i class="fa fa-magic"></i>&nbsp; Créer Votre première campagne !</a>
+                </div>
+                <div id="error_view" class="card-body card-block block-hidden">
+                    <div class="login-logo">
+                        <h3>Configuration de votre application</h3>
+                        <br>
+                        <div class="alert alert-success" role="alert">
+                            Il semble que votre application à déjà été configuré.
+                            Plus besion de perdre le temps <a href="{% url 'dashboard_sp:home' %}" class="alert-link">Lancé vous maintenant ! </a> .
+                        </div>
+                    </div>
+                    <a href="{% url 'dashboard_sp:campagne' %}" class="btn btn-outline-success btn-sm btn-block">
+                        <i class="fa fa-magic"></i>&nbsp; Créer Votre première campagne !</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+
+    var dataSend = {}
+
+    window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1044498892617544',
+          cookie     : true,                     // Enable cookies to allow the server to access the session.
+          xfbml      : true,                     // Parse social plugins on this webpage.
+          version    : 'v6.0'           // Use this Graph API version for this call.
+        })
+      }
+
+    const fb_check = document.getElementById('fb_check')
+    const twitt_check = document.getElementById('twitt_check')
+    const insta_check = document.getElementById('insta_check')
+    const btn_next = document.getElementById('btn_next')
+    const page_view = document.getElementById('page_view')
+    const select_view = document.getElementById('select_view')
+    const back_view = document.getElementById('back_view')
+    const final_view = document.getElementById('final_view')
+    const valid_data = document.getElementById('valid_data')
+    const error_view = document.getElementById('error_view')
+
+
+    valid_data.addEventListener('click', (event)=>{
+        event.stopImmediatePropagation()
+        const csrf_token = document.querySelector('input[name=csrfmiddlewaretoken]')
+        
+        dataSend = {...dataSend, csrfmiddlewaretoken : csrf_token.value}
+        $.post("{% url 'dashboard_sp:fb_data' %}",dataSend,
+            (resp, status)=>{
+                if (resp.status){
+                    final_view.classList.toggle('block-hidden')
+                    page_view.classList.toggle('block-hidden')
+                } else {
+                    error_view.classList.toggle('block-hidden')
+                    page_view.classList.toggle('block-hidden')
+                }
+            }
+        )
+    })
+    
+
+    back_view.addEventListener('click', (event)=>{
+        event.stopImmediatePropagation()
+        select_view.classList.toggle('block-hidden')
+        page_view.classList.toggle('block-hidden')
+    })
+
+
+    btn_next.addEventListener('click', (event)=>{
+        event.stopImmediatePropagation()
+            
+        if (fb_check.checked){
+            FB.login(response => {
+                if (response.status === 'connected') {
+                    const auth = response.authResponse
+                    dataSend = {
+                        user_id : auth.userID,
+                        access_token : auth.accessToken,
+                        pages : [],
+                    }
+                    select_view.classList.toggle('block-hidden')
+                    page_view.classList.toggle('block-hidden')
+                    FB.api(`${auth.userID}/accounts`,'GET',
+                        function(data) {
+                            const page_fb = document.getElementById('page_fb')
+                            page_fb.innerHTML = ''
+                            for(item of data.data){
+                                let page = {
+                                    access_token : item.access_token,
+                                    category : item.category,
+                                    id : item.id,
+                                    name : item.name
+                                }
+                                dataSend.pages = [...dataSend.pages, page]
+                                let col = document.createElement('div')
+                                col.classList.add('col-md-6')
+                                let content = '<div class="card">'
+                                content+=`<img class="card-img-top" src="{% static 'dashboard/images/facebook_picture.png' %}" alt="Card image cap">`
+                                content+='<div class="card-body">'
+                                content+='<h4 class="card-title mb-3">'+item.name+'</h4>'
+                                content+='<p class="card-text">'+item.category+'</p>'
+                                col.innerHTML = content
+                                page_fb.appendChild(col)
+                            }
+                        }
+                    );
+                  } else {
+                    // The person is not logged into your webpage or we are unable to tell. 
+                  }
+              }, {scope: 'public_profile,email,manage_pages,pages_manage_cta,pages_show_list,publish_pages,read_insights,pages_manage_instant_articles'})
+        }
+    })
+</script>
+<script src="https://connect.facebook.net/en_US/sdk.js"></script>
 {% endblock %}

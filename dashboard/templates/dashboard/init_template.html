@@ -39,12 +39,6 @@
                             <li>
                                 <a href="{% url 'dashboard_sp:edit_login' %}">Compte</a>
                             </li>
-                            <li>
-                                <a href="{% url 'dashboard_sp:edit_fb_access' %}">Facebook App</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'dashboard_sp:config' %}">Facebook Page</a>
-                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -80,12 +74,6 @@
                             </li>
                             <li>
                                 <a href="{% url 'dashboard_sp:edit_login' %}">Compte</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'dashboard_sp:edit_fb_access' %}">Facebook App</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'dashboard_sp:config' %}">Facebook Page</a>
                             </li>
                         </ul>
                     </li>
@@ -178,6 +166,9 @@
         setInterval(
             ()=>$.ajax({
                 url: "{% url 'dashboard_sp:fb_query' %}",
+                data:{
+                    'query':'execute'
+                },
                 dataType: 'json',
                 success: function (data) {
                   if (data.statu === "success") {

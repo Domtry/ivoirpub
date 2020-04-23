@@ -49,12 +49,6 @@ Notes:	decreasing heading by 0.4em with every subsequent heading level
 }
 
 
-.hidden{
-    display: none;
-    visibility: hidden;
-}
-
-
 ul {
     margin: 0;
 }
@@ -14665,4 +14659,22 @@ section {
 
 .vue-lists ul, .vue-lists ol {
     padding-left: 30px;
+}
+
+.block-hidden {
+    display: none !important ;
+    visibility: hidden !important ;
+}
+
+
+.disabled{
+    pointer-events: none !important;
+}
+
+.center-box{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    margin-bottom: 20px;
 }

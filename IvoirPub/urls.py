@@ -1,7 +1,9 @@
+from django.contrib import admin
 from django.conf.urls import url, include
 from dashboard import views, urls
 
 urlpatterns = [
+    url(r'admin/', admin.site.urls),
     url(r'^$', views.login_page, name='login'),
     url(r'^login/', views.login_page, name='login'),
     url(r'^register/', views.registre_page, name='register'),

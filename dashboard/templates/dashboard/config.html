@@ -9,7 +9,7 @@
                 <!-- DATA TABLE -->
                 <div class="user-data m-b-30">
                     <h3 class="title-3 m-b-30">
-                        <i class="zmdi zmdi-account-calendar"></i>Compte Config</h3>
+                        <i class="zmdi zmdi-account-calendar"></i>Compte Application</h3>
                     <div class="card-body card-block">
                         <p>
                             Username<br>
@@ -19,7 +19,7 @@
                             <strong>{{data.email}}</strong></p> 
                     </div>
                     <div class="modal-footer">
-                        <a href="{% url 'dashboard_sp:edit_login' %}" type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1" data-toggle="modal" data-target="#mediumModal">
+                        <a href="{% url 'dashboard_sp:edit_login' %}" type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1">
                             <i class="zmdi zmdi-edit"></i>Modifier</a>
                     </div>
                 </div>
@@ -27,46 +27,65 @@
                 <!-- DATA TABLE -->
                 <div class="user-data m-b-30">
                     <h3 class="title-3 m-b-30">
-                        <i class="zmdi zmdi-account-calendar"></i>Facebook Apps Config</h3>
+                        <i class="zmdi zmdi-account-calendar"></i>Plateformes</h3>
                     <div class="card-body card-block">
-                        <p>
-                            Application ID <br>
-                            <strong>{{fb_data.app_id}}</strong></p>
-                        <p>
-                            Application Secret Key<br>
-                            <strong>{{fb_data.app_secret_key}}</strong></p>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="{% url 'dashboard_sp:edit_fb_access' %}" type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1" data-toggle="modal" data-target="#mediumModal">
-                            <i class="zmdi zmdi-edit"></i>Modifier</a>
-                    </div>
-                </div>
-                <!-- END DATA TABLE -->
-                <!-- DATA TABLE -->
-                <div class="user-data m-b-30">
-                    <h3 class="title-3 m-b-30">
-                        <i class="zmdi zmdi-account-calendar"></i>Facebook Page Config</h3>
-                   
-                    <div class="container-fluid">
-                        <div class="row">
-                            
-                            {% for item in fb_page%}
-                                <div class="col-md-4">
-                                    <a href="{% url 'dashboard_sp:page_detail' page_id=item.id %}">
-                                        <div class="card">
-                                            <img class="card-img-top" src="{% static 'dashboard/images/bg-title-01.jpg' %}" alt="Card image cap">
-                                            <div class="card-body">
-                                                <h4 class="card-title mb-3">{{item.title}}</h4>
-                                                <p class="card-text">{{item.page_id}}</p>
-                                            </div>
-                                        </div>
-                                    </a>
+                        <div class="card">
+                            <div class="card-header">
+                              <strong>Facebook configuration</strong>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="zmdi zmdi-edit"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-top-campaign">
+                                        <tbody>
+                                            <tr>
+                                                <td>User ID</td>
+                                                <td>{{fb_user.user_id}}</td>
+                                            </tr>
+                                            {% for item in fb_pages %}
+                                                <tr>
+                                                    <td>{{item.name}}</td>
+                                                    <td>{{item.category}}</td>
+                                                </tr>
+                                            {% endfor%}
+                                        </tbody>
+                                    </table>
                                 </div>
-                            {% endfor %}
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button  type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1" data-toggle="modal" data-target="#mediumModal">
-                                <i class="zmdi zmdi-edit"></i>Ajouter</button>
+                        <div class="card">
+                            <div class="card-header">
+                              <strong>Instagram configuration</strong>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="zmdi zmdi-edit"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-top-campaign">
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                              <strong>Twitter configuration</strong>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="zmdi zmdi-edit"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-top-campaign">
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,35 +93,5 @@
             </div>
         </div>
     </div>
-       <!-- modal medium -->
-    <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="mediumModalLabel">
-                        Ajouter une nouvelle page
-                    </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="card-body card-block">
-                        <form action="" method="post">
-                            {% csrf_token %} 
-                            {% for field in form %}
-                                <div class="form-group">
-                                    {{ field.errors }}
-                                    {{ field.label_tag }} {{ field }}
-                                </div>
-                            {% endfor %}
-                            <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Ajouter</button>
-                        </form> 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end modal medium -->
 </div>
 {% endblock %}  

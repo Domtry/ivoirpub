@@ -1,5 +1,6 @@
 {% extends 'dashboard/init_template.html' %}
 {% block page_title %}Detail{% endblock %}
+{% load static %}
 {% block app_container %}
     <!-- MAIN CONTENT-->
 <div class="main-content">
@@ -33,7 +34,7 @@
                 <!-- DATA TABLE -->
                 <div class="user-data m-b-30">
                     <h3 class="title-3 m-b-30">
-                        Listes des objectifs</h3>
+                        Données à postés</h3>
                         <div class="table-responsive table-data">
                             <table class="table">
                                 <thead>
@@ -45,7 +46,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for item in data_objectif %}
+                                    {% for item in posts %}
                                         <tr>
                                             <td>
                                                 <div class="table-data__info">
@@ -89,7 +90,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="mediumModalLabel">
-                        Ajout d'un nouveau objectif
+                        Ajouter une données à poster
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -97,14 +98,62 @@
                 </div>
                 <div class="modal-body">
                     <div class="card-body card-block">
-                        <form action="" method="post">
+                        <form action="" method="post" enctype="multipart/form-data">
                             {% csrf_token %} 
-                            {% for field in form %}
-                                <div class="form-group">
-                                    {{ field.errors }}
-                                    {{ field.label_tag }} {{ field }}
+                            <div class="form-group">
+                                {{ form.title.label_tag }}
+                                {{ form.title }}
+                                {{ form.title.errors }}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form.poste_date.label_tag }}
+                                        {{ form.poste_date }}
+                                        {{ form.poste_date.errors }}
+                                    </div>
                                 </div>
-                            {% endfor %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form.poste_heure.label_tag }}
+                                        {{ form.poste_heure }}
+                                        {{ form.poste_heure.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="default-tab">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active show" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Simple message</a>
+                                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Multi-media</a>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                                        <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                            <div class="form-group">
+                                                {{ form.message.label_tag }}
+                                                {{ form.message }}
+                                                {{ form.message.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    {{ form.data_file.label_tag }}
+                                                    {{ form.data_file }}
+                                                    {{ form.data_file.errors }}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="media_message">Message</label>
+                                                    <textarea name="media_message" cols="40" rows="3" class="au-input au-input--full" placeholder="Saisissez un joie message pour vos internautes " maxlength="500" id="media_message"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                             <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Ajouter</button>
                         </form> 
                     </div>

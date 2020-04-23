@@ -73,43 +73,6 @@ class RegisterForm(ModelForm):
 
 
 
-class FacebookAccessForm(ModelForm):
-    
-    class Meta:
-        model = models.Fb_Access
-        fields = ('user_lg_token', 'app_secret_key', 'app_id')
-        labels = {
-            'user_lg_token': "User long token",
-            'app_secret_key': 'Secret key application',
-            'app_id': 'Application ID',
-        }
-        widgets = {
-            'user_lg_token': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"token"
-                }
-            ),
-            'app_secret_key': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"secret key"
-                }
-            ),
-            'app_id': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"app_id"
-                }
-            )
-        }
-        exclude = ('create_date', 'account')
-
-        def clean(self):
-            cleaned_data = super(FacebookAccessForm, self).clean()
-            return cleaned_data 
-
-
 
 class CampagneForm(ModelForm):
 
@@ -153,30 +116,28 @@ class CampagneForm(ModelForm):
 
 
 
-class ObjectifForm(ModelForm):
+class PostForm(ModelForm):
 
     class Meta:
-        model = models.Objectif
-        fields = ('title', 'description', 'poste_date', 'poste_heure', 'message')
+        model = models.Post
+        fields = (
+            'title', 
+            'poste_date', 
+            'poste_heure', 
+            'message',
+            'data_file')
         labels = {
-            'title': "Titre de l'objectif",
-            'description': 'Description',
+            'title': "Titre",
             'poste_date': 'Date de publication',
             'poste_heure': 'Heure du poste', 
             'message': 'Message',
+            'data_file': 'Ajouter un fichier multi-media',
         }
         widgets = {
             'title': TextInput(
                 attrs={
                 'class': "au-input au-input--full",
-                "placeholder":"title of objectif"
-                }
-            ),
-            'description': Textarea(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"objectif description",
-                "rows": 2,
+                "placeholder":"Titre du post"
                 }
             ),
             'poste_date': DateInput(
@@ -194,41 +155,15 @@ class ObjectifForm(ModelForm):
             'message': Textarea(
                 attrs={
                 'class': "au-input au-input--full",
-                "placeholder":"post message",
+                "placeholder":"Saisissez un joie message pour vos internautes ",
                 "rows": 3,
+                }
+            ),
+            'data_file' : FileInput(
+                attrs={
+                'class': "au-input au-input--full",
+                "placeholder":"Aucun fichier selectionné"
                 }
             )
         }
-        exclude = ('is_publish', 'create_date', 'campagne')
-        
-
-class FacebookPageForm(ModelForm):
-    class Meta:
-        model = models.Fb_Page
-        fields = ('title', 'page_id', 'page_lg_tk')
-        labels = {
-            'title': "Page Title",
-            'page_id': 'Page ID',
-            'page_lg_tk': 'Page long Token',
-        }
-        widgets = {
-            'title': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"title of page"
-                }
-            ),
-            'page_id': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"Page id"
-                }
-            ),
-            'page_lg_tk': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"long token"
-                }
-            ),
-        }
-        exclude = ('fb_access',)
+        exclude = ('is_publish', 'campagne', 'used_file')

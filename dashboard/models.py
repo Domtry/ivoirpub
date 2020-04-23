@@ -21,7 +21,7 @@ class Account(models.Model):
 
 class Campagne(models.Model):
     title = models.CharField(max_length=80)
-    description = models.TextField(max_length=500, default='')
+    description = models.TextField(max_length=500, null=True, blank=True)
     state = models.BooleanField(default=False)
     start_date = models.DateField()
     close_date = models.DateField()
@@ -33,36 +33,35 @@ class Campagne(models.Model):
         return f'{self.title} {self.state}'
 
 
-class Objectif(models.Model):
+class Post(models.Model):
     title = models.CharField(max_length=80)
-    description = models.TextField(max_length=100, default='')
-    message = models.TextField(max_length=500)
+    message = models.TextField(max_length=500, null=True, blank=True)
     poste_date = models.DateField()
     poste_heure = models.TimeField()
-    create_date = models.DateField(auto_now_add=True)
+    data_file = models.FileField(upload_to = 'uploads', null=True, blank=True)
     is_publish = models.BooleanField(default=False)
+    used_file = models.BooleanField(default=False)
     campagne = models.ForeignKey(Campagne, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.title} {self.is_publish}'
 
 
-class Fb_Access(models.Model):
-    user_lg_token = models.CharField(max_length=300)
-    app_secret_key = models.CharField(max_length=50)
-    app_id = models.CharField(max_length=30)
-    create_date = models.DateField(auto_now_add=True)
+
+class FacebookUser(models.Model):
+    user_id = models.CharField(max_length=20, unique=True)
+    access_token = models.CharField(max_length=1000)
+    expires_in = models.IntegerField()
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.app_id}'
+        return f'{self.user_id}'
 
 
-class Fb_Page(models.Model):
-    title = models.CharField(max_length=70)
-    page_id = models.CharField(max_length=30)
-    page_lg_tk = models.CharField(max_length=300)
-    fb_access = models.ForeignKey(Fb_Access, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.title} {self.page_id}'
+class FPage(models.Model):
+    page_id = models.CharField(max_length=20, unique=True)
+    access_token = models.TextField(max_length=1000)
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=70)
+    expires_in = models.IntegerField()
+    fb_user = models.ForeignKey(FacebookUser, on_delete=models.CASCADE)
