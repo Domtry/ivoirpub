@@ -4,6 +4,7 @@ from django.forms import (
     Form, 
     ModelForm, 
     TextInput, 
+    CheckboxInput,
     PasswordInput, 
     EmailInput,
     Textarea,
@@ -19,7 +20,7 @@ class LoginForm(Form):
         widget=forms.TextInput(
             attrs={
                 'class': "au-input au-input--full",
-                "placeholder":"Email"
+                "placeholder":"Adresse E-mail"
                 }
             )
         )
@@ -28,7 +29,7 @@ class LoginForm(Form):
         widget=forms.PasswordInput(
             attrs={
                 'class': "au-input au-input--full",
-                "placeholder":"password"
+                "placeholder":"Mot de passe"
                 }
             )
         )
@@ -43,23 +44,16 @@ class RegisterForm(ModelForm):
     
     class Meta:
         model = models.Account
-        fields = ('username', 'email', 'password')
+        fields = ('email', 'password')
         labels = {
-            'name': 'Username',
-            'email': 'Email Address',
-            'password': 'Password'
+            'email': 'Adresse E-mail',
+            'password': 'Mot de passe'
         }
         widgets = {
-            'username': TextInput(
-                attrs={
-                'class': "au-input au-input--full",
-                "placeholder":"username"
-                }
-            ),
             'email': EmailInput(
                 attrs={
                 'class': "au-input au-input--full",
-                "placeholder":"email"
+                "placeholder":"exemple: ivoirpub@gmail.com"
                 }
             ),
             'password': PasswordInput(
@@ -125,6 +119,7 @@ class PostForm(ModelForm):
             'poste_date', 
             'poste_heure', 
             'message',
+            'pages_posted',
             'data_file')
         labels = {
             'title': "Titre",
@@ -137,6 +132,12 @@ class PostForm(ModelForm):
             'title': TextInput(
                 attrs={
                 'class': "au-input au-input--full",
+                "placeholder":"Titre du post"
+                }
+            ),
+            'pages_posted': TextInput(
+                attrs={
+                'class': "au-input au-input--full block-hidden",
                 "placeholder":"Titre du post"
                 }
             ),
@@ -155,7 +156,7 @@ class PostForm(ModelForm):
             'message': Textarea(
                 attrs={
                 'class': "au-input au-input--full",
-                "placeholder":"Saisissez un joie message pour vos internautes ",
+                "placeholder":"Saisissez un beau message pour vos internautes ",
                 "rows": 3,
                 }
             ),
@@ -164,6 +165,32 @@ class PostForm(ModelForm):
                 'class': "au-input au-input--full",
                 "placeholder":"Aucun fichier selectionné"
                 }
-            )
+            ), 
         }
         exclude = ('is_publish', 'campagne', 'used_file')
+
+
+
+class ConfigurationForm(ModelForm):
+
+    class Meta:
+        model = models.Configuration
+        fields = ('aut_generate', 'default_page')
+        labels = {
+            'aut_generate': 'Auto generation du token',
+            'default_page': 'Page de publication pas defaut'
+        }
+        widgets = {
+        'aut_generate': CheckboxInput(
+            attrs={
+            'class': "switch-input close",
+            }
+        ),
+        'default_page': TextInput(
+            attrs={
+            'disabled': 'true',
+            'class': "au-input au-input--full",
+            "placeholder":"Titre du post"
+            })
+        }
+        exclude = ('account',)

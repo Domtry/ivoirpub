@@ -3,7 +3,6 @@ from django.db import models
 # Create your models here.
 
 class Account(models.Model):
-    username = models.CharField(max_length=120)
     email = models.EmailField(max_length=150, unique=True)
     password = models.CharField(max_length=120)
     create_date = models.DateField(auto_now_add=True)
@@ -41,6 +40,8 @@ class Post(models.Model):
     data_file = models.FileField(upload_to = 'uploads', null=True, blank=True)
     is_publish = models.BooleanField(default=False)
     used_file = models.BooleanField(default=False)
+    fb_post_id = models.CharField(max_length=80, null=True, blank=True)
+    pages_posted = models.CharField(max_length=150, null=True, blank=True)
     campagne = models.ForeignKey(Campagne, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -65,3 +66,12 @@ class FPage(models.Model):
     category = models.CharField(max_length=70)
     expires_in = models.IntegerField()
     fb_user = models.ForeignKey(FacebookUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Configuration(models.Model):
+    aut_generate = models.BooleanField(default=True)
+    default_page = models.CharField(max_length=30)
+    account = models.OneToOneField(Account, on_delete=models.CASCADE)

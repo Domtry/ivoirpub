@@ -1,7 +1,8 @@
 import json
 import facebook
 import requests
-from dashboard.models import FacebookUser, FPage
+import time
+from dashboard.models import FacebookUser, FPage, Configuration
 
 class FbGraphAPI(object):
     
@@ -12,12 +13,13 @@ class FbGraphAPI(object):
     PAGE_TOKEN = '' # jeton d'acces page 
     USER_TOKEN = '' # jeton d'acces utilisateur 
 
+    HOST = 'https://graph.facebook.com/v6.0'
+
 
     def __init__(self, account) :
         super().__init__()
         fb_access = FacebookUser.objects.filter(account=account)[0]
         fb_page = FPage.objects.filter(fb_user=fb_access)[0]
-
         FbGraphAPI.USER_TOKEN = fb_access.access_token
         FbGraphAPI.PAGE_ID = fb_page.page_id
         FbGraphAPI.PAGE_TOKEN = fb_page.access_token
@@ -105,7 +107,7 @@ class FbGraphAPI(object):
         result = obj.fb_get_page_detail()
         print(result)
         """
-        resp = self.obj_graph.get_object("/me/")
+        resp = self.obj_graph.get_object(FbGraphAPI.PAGE_ID)
         return resp
 
 
@@ -133,10 +135,29 @@ class FbGraphAPI(object):
         return access_token_info
 
 
+    @classmethod
+    def fb_get_all_commets(cls):
+        curl = f'{cls.HOST}/{cls.PAGE_ID}/posts?access_token={cls.PAGE_TOKEN}'
+        r = requests.get(curl)
+        data = r.json()
+        return data
+
 
     def fb_get_visitor_number(self):
         pass
 
+        
+
+    def fb_get_all_posted_commet(self):
+        posted = {}
+        rspn = self.obj_graph.get_all_posted_page()
+        
+        for item in rspn:
+            post_id = item['id']
+            comets = self.obj_graph.get_post_commet(post_id)
+            posted[post_id] = comets
+        
+        return posted
 
 if __name__ == "__main__":
     obj = FbGraphAPI()

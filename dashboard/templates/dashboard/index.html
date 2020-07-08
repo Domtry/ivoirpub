@@ -29,7 +29,7 @@
                                         {% endif %}
                                                 <div class="au-task__item-inner">
                                                     <h5 class="task">
-                                                        <a href="#">{{els.title}}</a>
+                                                        <a href="{% url 'dashboard_sp:post' post_id=els.id cmp_id=item.campagne.id %}">{{els.title}}</a>
                                                     </h5>
                                                     <span class="time">{{els.poste_date}} {{els.poste_heure}}</span>
                                                 </div>
@@ -44,11 +44,6 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="col-md-12">
-                    <div class="copyright">
-                        <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,142 @@
+{% extends 'dashboard/init_template.html' %}
+{% block page_title %}Editer{% endblock %}
+{% block app_container %}
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <!-- DATA TABLE -->
+                <div class="user-data m-b-30">
+                    <div class="container">
+                        {% if success %}
+                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                <span class="badge badge-pill badge-success">Succès</span>
+                                {{success}}
+                                <button type="button" class="close" data-dismiss="success" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        <h3 class="title-3 m-b-30">
+                            <i class="zmdi zmdi-account-calendar"></i>{{post.title}}</h3>
+                            {% if post.is_publish %}
+                                <div class="alert alert-success" role="alert">
+                                    Ce post a été publié sur <strong>{{page_default}}</strong>
+                                    le {{post.poste_date}} à {{post.poste_heure}}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning" role="alert">
+                                    Encore en cours de d'envoi<br>
+                                    Page cible : <strong>{{page_default}}</strong><br>
+                                    Date de publication : {{post.poste_date}} à {{post.poste_heure}}
+                                </div>
+                            {% endif %}
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %} 
+                                <div class="form-group">
+                                    {{ form.title.label_tag }}
+                                    {{ form.title }}
+                                    {{ form.title.errors }}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.poste_date.label_tag }}
+                                            {{ form.poste_date }}
+                                            {{ form.poste_date.errors }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.poste_heure.label_tag }}
+                                            {{ form.poste_heure }}
+                                            {{ form.poste_heure.errors }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="default-tab">
+                                        <nav>
+                                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active show" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Simple message</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Multi-media</a>
+                                            </div>
+                                        </nav>
+                                        <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                                            <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                {% if post.used_file  %}
+                                                    <div class="form-group">
+                                                        <label for="media_message">Message</label>
+                                                        <textarea name="media_message" cols="40" rows="3" class="au-input au-input--full" placeholder="Saisissez un joie message pour vos internautes " maxlength="500" id="media_message"></textarea>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="form-group">
+                                                        {{ form.message.label_tag }}
+                                                        {{ form.message }}
+                                                        {{ form.message.errors }}
+                                                    </div>
+                                                {% endif %}
+                                                <div class="form-group">
+                                                    {{ form.pages_posted }}
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                                <div class="row">
+                                                    <div class="form-group">
+                                                        {{ form.data_file.label_tag }}
+                                                        {{ form.data_file }}
+                                                        {{ form.data_file.errors }}
+                                                    </div>
+                                                    {% if post.used_file  %}
+                                                        <div class="form-group">
+                                                            {{ form.message.label_tag }}
+                                                            {{ form.message }}
+                                                            {{ form.message.errors }}
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="form-group">
+                                                            <label for="media_message">Message</label>
+                                                            <textarea name="media_message" cols="40" rows="3" class="au-input au-input--full" placeholder="Saisissez un joie message pour vos internautes " maxlength="500" id="media_message"></textarea>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col col-md-3">Changer de page</div>
+                                                <div class="col-12 col-md-9">
+                                                    <select name="select" id="page_selected" class="form-control" value={{page.name}}>
+                                                        {% for page in pages%}
+                                                            <option value="{{page.page_id}}">{{page.name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <span class="help-block">{{form.default_page.error}}</span>
+                                                </div>
+                                            </div>
+                                            <div id="list_pages" class="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="submit_btn" class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Modifier</button>
+                            </form>     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<script>
+    const pageSelected = document.getElementById('page_selected')
+    const listPages = document.getElementById('list_pages')
+    const hiddenList_page = document.getElementById('id_pages_posted')
+    hiddenList_page.value = "{{post.pages_posted}}"
+
+    pageSelected.addEventListener('click', event => {
+        event.stopImmediatePropagation()
+        hiddenList_page.value = pageSelected.value
+        console.log(hiddenList_page.value)
+    })
+</script>
+{% endblock %}  

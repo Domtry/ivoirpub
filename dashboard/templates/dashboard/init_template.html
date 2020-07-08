@@ -8,7 +8,7 @@
             <div class="container-fluid">
                 <div class="header-mobile-inner">
                     <a class="logo" href="index.html">
-                        <img src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin" />
+                        <img class="logo" src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin" />
                     </a>
                     <button class="hamburger hamburger--slider" type="button">
                         <span class="hamburger-box">
@@ -28,7 +28,7 @@
                         <a href="{% url 'dashboard_sp:campagne' %}"><i class="fas fa-table"></i>Campagne</a>
                     </li>
                     <li>
-                        <a href="chart.html"><i class="fas fa-chart-bar"></i>Bilan</a>
+                        <a href="{% url 'dashboard_sp:bilan' %}"><i class="fas fa-chart-bar"></i>Bilan</a>
                     </li>
                     <li class="js-arrow open">
                         <a href="#"><i class="zmdi zmdi-settings"></i>Parametre</a>
@@ -51,7 +51,7 @@
     <aside class="menu-sidebar d-none d-lg-block">
         <div class="logo">
             <a href="#">
-                <img src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin" />
+                <img class="logo" src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin" />
             </a>
         </div>
         <div class="menu-sidebar__content js-scrollbar1">
@@ -64,7 +64,7 @@
                         <a href="{% url 'dashboard_sp:campagne' %}"><i class="fas fa-table"></i>Campagne</a>
                     </li>
                     <li>
-                        <a href="chart.html"><i class="fas fa-chart-bar"></i>Bilan</a>
+                        <a href="{% url 'dashboard_sp:bilan' %}"><i class="fas fa-chart-bar"></i>Bilan</a>
                     </li>
                     <li class="js-arrow open">
                         <a href="#"><i class="zmdi zmdi-settings"></i>Parametre</a>
@@ -109,7 +109,7 @@
                             <div class="account-wrap">
                                 <div class="account-item clearfix js-item-menu">
                                     <div class="image">
-                                        <img src="{% static 'dashboard/images/icon/avatar-01.jpg' %}" alt="John Doe" />
+                                        <img src="{% static 'dashboard/images/icon/avatar-01.png' %}" alt="John Doe" />
                                     </div>
                                     <div class="content">
                                         <a class="js-acc-btn" href="#">{{username}}</a>
@@ -118,7 +118,7 @@
                                         <div class="info clearfix">
                                             <div class="image">
                                                 <a href="#">
-                                                    <img src="{% static 'dashboard/images/icon/avatar-01.jpg' %}" alt="John Doe" />
+                                                    <img src="{% static 'dashboard/images/icon/avatar-01.png' %}" alt="John Doe" />
                                                 </a>
                                             </div>
                                             <div class="content">

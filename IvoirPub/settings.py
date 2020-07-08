@@ -25,8 +25,7 @@ SECRET_KEY = 'zk!j8)#*9a71it#cqsx^g)znjlc_$t)!cpmhe8ia!^rqjrwva9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.102','36c1bd59.ngrok.io', '127.0.0.1']
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+ALLOWED_HOSTS = ['192.168.42.97','c8d902b91879.ngrok.io', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [

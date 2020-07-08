@@ -1,5 +1,5 @@
 {%  extends 'dashboard/base.html' %}
-{% block page_title %}Inscrition{% endblock %}
+{% block page_title %}Inscription{% endblock %}
 {% load static %}
 {% block page_container %}
 <div class="page-content--bge5">
@@ -8,7 +8,7 @@
             <div class="login-content">
                 <div class="login-logo">
                     <a href="#">
-                        <img src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin">
+                        <img class="logo" src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin">
                     </a>
                 </div>
                 {% if error %}
@@ -31,18 +31,17 @@
                                 {{ field.label_tag }} {{ field }}
                             </div>
                         {% endfor %}
-                        <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">register</button>
+                        <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Je m"enregistre</button>
                         <div class="social-login-content">
                             <div class="social-button">
-                                <button class="au-btn au-btn--block au-btn--blue m-b-20">register with facebook</button>
-                                <button class="au-btn au-btn--block au-btn--blue2">register with twitter</button>
+                                <button id="register_fb" class="au-btn au-btn--block au-btn--blue m-b-20">Inscription via Facebook</button>
                             </div>
                         </div>
                     </form>
                     <div class="register-link">
                         <p>
-                            Already have account?
-                            <a href="{% url 'login' %}">Sign In</a>
+                            Avez vous déjà un compte?
+                            <a href="{% url 'login' %}">Je me connecte</a>
                         </p>
                     </div>
                 </div>
@@ -51,3 +50,35 @@
     </div>
 </div>
 {% endblock %}
+{% block ajax_block %}
+    <script>
+
+        window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '1044498892617544',
+              cookie     : true,                     // Enable cookies to allow the server to access the session.
+              xfbml      : true,                     // Parse social plugins on this webpage.
+              version    : 'v6.0'           // Use this Graph API version for this call.
+            })
+        }
+
+        document.getElementById('register_fb').addEventListener('click', (event)=>{
+            event.stopImmediatePropagation()
+
+            FB.login(response => {
+                if (response.status === 'connected') {
+                    const auth = response.authResponse
+                    FB.api('/me','GET',{"fields":"email"},
+                        function(data) {
+                            console.log(data);
+                            var email = document.getElementById('id_email')
+                            email.value = data.email
+                            email.setAttribute('disabled', true)
+                        }
+                    )
+                } 
+            }, {scope: 'public_profile, email'})
+        })
+    </script>
+    <script src="https://connect.facebook.net/en_US/sdk.js"></script>
+{% endblock%}

@@ -14678,3 +14678,8 @@ section {
     align-items: center !important;
     margin-bottom: 20px;
 }
+
+.padding-selected{
+    padding: 10px !important;
+    margin: 2px !important;
+}

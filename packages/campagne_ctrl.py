@@ -3,10 +3,12 @@ from dashboard.models import (
     Post, 
     Account, 
     FacebookUser, 
-    FPage
+    FPage,
+    Configuration
 )
 from datetime import datetime
 from packages.fb_graph_api import FbGraphAPI
+from packages.twilio_api import send_sms
 
 class CampagneCtrl:
 
@@ -21,34 +23,58 @@ class CampagneCtrl:
         message = []
 
         for item in campagnes :
-            if not item.state :
-                posts = Post.objects.filter(campagne=item)
-                dashboard_data.append({'campagne':item, 'post':posts}) 
+            today_now = datetime.now()
+            date = today_now.date()
+
+            if item.close_date == date :
+                if not item.state :
+                    item.state = True
+                    item.save()
+            else :
+                if not item.state :
+                    posts = Post.objects.filter(campagne=item)
+                    dashboard_data.append({'campagne':item, 'post':posts}) 
         
         for item in dashboard_data:
             for els in item['post']:
                 if not els.is_publish :
                     object_not_publish.append(els)
 
-
         for item in object_not_publish:
             pst_m = item.poste_heure.minute
+
             if pst_m == 0:
                 pst_m = f'00'
+
             poseted_date = f'{item.poste_heure.hour}:{pst_m}'
             today_now = datetime.now()
             date = today_now.date()
             heure = f'{today_now.hour}:{today_now.minute}'
+
             if item.poste_date == date and poseted_date == heure:
                 data = None
+                page = FPage.objects.filter(page_id=item.pages_posted)[0]
+                message_send = f"""
+                #{page.name} #{item.title}
+                {item.message}
+                """ 
+                print(message_send)
+                FbGraphAPI.PAGE_TOKEN = page.access_token
+                FbGraphAPI.PAGE_ID = page.page_id
+
                 if item.used_file :
-                    data = graph_api.fb_put_poste_photo(item.data_file, item.message)
+                    data = graph_api.fb_put_poste_photo(f'/home/domtry/Documents/ivoirpub/{item.data_file}', message_send)
                 else :
-                    data = graph_api.fb_put_poste_msg(item.message)
+                    data = graph_api.fb_put_poste_msg(message_send)
+
                 if 'id' in data.keys():
                     item.is_publish = True
+                    item.fb_post_id = data['id']
                     item.save()
-                    message.append(item.title)
+                    message.append(f'{page.name}({item.title})')
+
+        if len(message) != 0 :
+            send_sms(message)
         return message
 
 
@@ -81,9 +107,32 @@ class CampagneCtrl:
                 user_obj = user_obj[0]
                 resp_page = CampagneCtrl.save_facebook_page(page_data, user_obj)
                 if resp_page['status']:
+                    config = Configuration.objects.create(
+                        aut_generate=True,
+                        default_page=page_data[0]['id'],
+                        account=account
+                    )
+                    config.save()
                     return resp_page
         except Exception as error:
             return {"status": False, "message": f"{error}"}
+
+
+    @classmethod
+    def upload_app_configuration(cls, form, account):
+        try:
+            page = form.cleaned_data['default_page']
+            aut_gn = f"{form.cleaned_data['aut_generate']}".capitalize()
+            page = FPage.objects.filter(page_id=page)[0]
+            config = Configuration.objects.filter(account=account)[0]
+            config.aut_generate = aut_gn
+            config.default_page = f'{page.page_id}'
+            config.save()
+            return {"status": True, "message": "update has been success"}
+        except Exception as error:
+            return {"status": False, "message": f"{error}"}
+        else:
+            return {"status": True, "message": "update has been success"}
 
 
     # fonction testé

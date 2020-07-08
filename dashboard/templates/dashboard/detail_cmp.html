@@ -22,19 +22,19 @@
                             Date de cloture<br>
                             <strong>{{campagne.close_date}}</strong></p>
                         <p>
-                            Statue de la campagne<br>
+                            Etat de la campagne<br>
                             <strong>{{campagne.state}}</strong></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1" data-toggle="modal" data-target="#mediumModal">
-                            <i class="zmdi zmdi-plus"></i>Ajouter un objectif</button>
+                        <a href="{% url 'dashboard_sp:detail_compagne' cmp_id=campagne.id %}" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1">
+                            <i class="zmdi zmdi-plus"></i>Modifier</a>
                     </div>
                 </div>
                 <!-- END DATA TABLE -->
                 <!-- DATA TABLE -->
                 <div class="user-data m-b-30">
                     <h3 class="title-3 m-b-30">
-                        Données à postés</h3>
+                        Données postés</h3>
                         <div class="table-responsive table-data">
                             <table class="table">
                                 <thead>
@@ -55,7 +55,7 @@
                                             </td>
                                             <td>
                                                 <div class="table-data__info">
-                                                    <h6>{{item.message}}</h6>
+                                                    <h6>{{item.message}}...</h6>
                                                 </div>
                                             </td>
                                             <td>
@@ -67,7 +67,7 @@
                                             </td>
                                             <td>
                                                 <span class="more">
-                                                    <i class="zmdi zmdi-edit"></i>
+                                                    <a href="{% url 'dashboard_sp:post' post_id=item.id cmp_id=campagne.id %}"><i class="zmdi zmdi-edit"></i></a>
                                                 </span>
                                                 <span class="more">
                                                     <i class="zmdi zmdi-delete"></i>
@@ -77,6 +77,10 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="au-btn au-btn-icon au-btn--green au-btn--small mb-1" data-toggle="modal" data-target="#mediumModal">
+                                <i class="zmdi zmdi-plus"></i>Ajouter un post</button>
                         </div>
                     </div>
                 </div>
@@ -90,7 +94,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="mediumModalLabel">
-                        Ajouter une données à poster
+                        Ajouter un contenu
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -136,6 +140,9 @@
                                                 {{ form.message }}
                                                 {{ form.message.errors }}
                                             </div>
+                                            <div class="form-group">
+                                                {{ form.pages_posted }}
+                                            </div>
                                         </div>
                                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                             <div class="row">
@@ -151,10 +158,31 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="card-body">
+                                        <label>Selectionner votre espace publicitaire</label>
+                                        <br>
+                                        <div class="alert alert-info" role="alert">
+                                            Par defaut ce contenu sera publié sur 
+                                            <span class="badge badge-pill badge-info" style="padding:10px"> {{page_default}}</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col col-md-3">Selection de page</div>
+                                            <div class="col-12 col-md-9">
+                                                <select name="select" id="page_selected" class="form-control" value={{page.name}}>
+                                                    {% for page in pages%}
+                                                        <option value="{{page.page_id}}">{{page.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <span class="help-block">{{form.default_page.error}}</span>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div id="list_pages" class="">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Ajouter</button>
+                            <button id="submit_btn" class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Ajouter</button>
                         </form> 
                     </div>
                 </div>
@@ -163,5 +191,26 @@
     </div>
     <!-- end modal medium -->
 </div>
+<script>
+    const pageSelected = document.getElementById('page_selected')
+    const listPages = document.getElementById('list_pages')
+    const hiddenList_page = document.getElementById('id_pages_posted')
+    
+    pageSelected.addEventListener('click', event => {
+        event.stopImmediatePropagation()
+        listPages.innerHTML = ''
+        let btn = document.createElement('button')
+        btn.setAttribute('type', 'button')
+        btn.setAttribute('id', pageSelected.value)
+        btn.setAttribute('class', 'badge badge-pill badge-info padding-selected')
+        btn.innerText = pageSelected.options[pageSelected.selectedIndex].text
+        hiddenList_page.value = `${pageSelected.value}`
+        listPages.appendChild(btn)
+        btn.addEventListener('click', event => {
+            event.stopImmediatePropagation()
+            listPages.removeChild(btn)
+        })
+    })
+</script>
 <!-- END MAIN CONTENT-->
 {% endblock %}  
