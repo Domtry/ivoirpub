@@ -6,8 +6,8 @@ from dashboard.models import FacebookUser, FPage, Configuration
 
 class FbGraphAPI(object):
     
-    APP_ID = '1044498892617544' # Identifiant de l'application
-    APP_SECRET_KEY = '45c550bd27b161a482759df4d37dc838' # jeton d'acces de l'application
+    APP_ID = '10444......' # Identifiant de l'application
+    APP_SECRET_KEY = '45c550.........' # jeton d'acces de l'application
 
     PAGE_ID = ''  # Identifiant de la page facebook
     PAGE_TOKEN = '' # jeton d'acces page 
