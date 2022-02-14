@@ -3,14 +3,14 @@ from twilio.base.exceptions import TwilioRestException
 
 
 def send_sms(msg):
-    account = "ACd3b64d23e4a4a9872fc1131981acf377"
-    token = "f22f10f9942fbc627263c4437564469b"
+    account = "---- Twilio_account -------"
+    token = "-------- Twilio_token -------"
     client = Client(account, token)
-    list_ctnt = ['77865857']
+    list_ctnt = ['0102030405']
     sms = f"{msg} bien été publié sur votre page Facebook"
     try:
         for call in list_ctnt :
-            message = client.messages.create(to=f'+225{call}', from_="+12053950795",
+            message = client.messages.create(to=f'+225{call}', from_="twilio_phone_number",
             body=sms)
     except TwilioRestException as e:
         pass
