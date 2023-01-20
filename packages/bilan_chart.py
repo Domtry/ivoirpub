@@ -12,7 +12,7 @@ import json
 
 class ChartJS:
     
-    def chart_camp_get_post_commets(cls, camp ,account):
+    def chart_camp_get_post_commets(self, camp, account):
         total = {}
         commets = []
         bk_color = []
@@ -26,41 +26,36 @@ class ChartJS:
                 total[item.title] = len(commets)
             else :
                 total[item.title] = 0
-            
+
             r = random.randint(0, 255)
             g = random.randint(0, 255)
             b = random.randint(0, 255)
             bk_color.append(f'rgba({r},{g},{b}, 0.2)')
             bd_color.append(f'rgba({r},{g},{b}, 1)')
 
-        chart_dataset = {
+        return {
             'type': 'bar',
             'data': {
-                'labels': [item for item in total.keys()],
-                'datasets': [{
-                    'label': camp.title,
-                    'backgroundColor': bd_color,
-                    'borderColor': bd_color,
-                    'data': [item for item in total.values()]
-                }]
-            },            
-            'options': {
-            }
+                'labels': list(total.keys()),
+                'datasets': [
+                    {
+                        'label': camp.title,
+                        'backgroundColor': bd_color,
+                        'borderColor': bd_color,
+                        'data': list(total.values()),
+                    }
+                ],
+            },
+            'options': {},
         }
-        
-        return chart_dataset
 
 
 
-    def get_all_posted_commet(cls, account):
+    def get_all_posted_commet(self, account):
         graph_api = FbGraphAPI(account)
         rspns = graph_api.fb_get_all_commets()
         page_data = rspns['data']
-        posts = []
-        for item in page_data:
-            post_id = item["id"]
-            posts.append(post_id)
-
+        posts = [item["id"] for item in page_data]
         for post in posts:
             rspn = graph_api.fb_get_post_commet(post)
             print(rspn)

@@ -35,8 +35,7 @@ class LoginForm(Form):
         )
 
     def clean(self):
-        cleaned_data = super(LoginForm, self).clean()
-        return cleaned_data 
+        return super(LoginForm, self).clean() 
 
 
 
