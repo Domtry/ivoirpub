@@ -28,24 +28,17 @@ class FbGraphAPI(object):
     
 
     def fb_get_all_posted_visitors(self, id):
-        list_resp = []
         data = self.obj_graph.get_all_connections(id, 'visitor_posts')
-        for item in data:
-            list_resp.append(item)
-        return list_resp
+        return list(data)
 
 
     def fb_get_all_posted_page(self, id):
-        list_resp = []
         data = self.obj_graph.get_all_connections(id, 'posts')
-        for item in data:
-            list_resp.append(item)
-        return list_resp
+        return list(data)
 
     
     def fb_put_poste_msg(self, msg):
-        resp =  self.obj_graph.put_object('me', 'feed', message=msg)
-        return resp
+        return self.obj_graph.put_object('me', 'feed', message=msg)
 
     
     def fb_put_poste_photo(self, urlimg, msg):
@@ -55,12 +48,12 @@ class FbGraphAPI(object):
         urlimg='/home/domtry/Documents/picture_1.png', 
         msg='une simple image de couverture')
         """
-        resp = self.obj_graph.put_photo(
-            image=open(urlimg, 'rb'),  
-            album_path="me/photos", 
-            caption=msg, 
-            published=True)
-        return resp
+        return self.obj_graph.put_photo(
+            image=open(urlimg, 'rb'),
+            album_path="me/photos",
+            caption=msg,
+            published=True,
+        )
 
 
     def fb_pub_postes_photos(self, list_post):
@@ -94,11 +87,8 @@ class FbGraphAPI(object):
         result = obj.fb_get_post_commet('106220841008568_107919960838656')
         print(result)
         """
-        list_resp = []
         data = self.obj_graph.get_all_connections(post_id, 'comments')
-        for item in data:
-            list_resp.append(item)
-        return list_resp
+        return list(data)
 
 
     def fb_get_page_detail(self):
@@ -107,8 +97,7 @@ class FbGraphAPI(object):
         result = obj.fb_get_page_detail()
         print(result)
         """
-        resp = self.obj_graph.get_object(FbGraphAPI.PAGE_ID)
-        return resp
+        return self.obj_graph.get_object(FbGraphAPI.PAGE_ID)
 
 
     def fb_get_page_token(self):
@@ -129,18 +118,14 @@ class FbGraphAPI(object):
     def fb_generate_long_access_tk(cls, token):
         access_tk_url = f"https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={FbGraphAPI.APP_ID}&client_secret={FbGraphAPI.APP_SECRET_KEY}&fb_exchange_token={token}"
         r = requests.get(access_tk_url)
-        # formatage de la données en format json
-        access_token_info = r.json()
-        # long_access_tk = access_token_info['access_token']
-        return access_token_info
+        return r.json()
 
 
     @classmethod
     def fb_get_all_commets(cls):
         curl = f'{cls.HOST}/{cls.PAGE_ID}/posts?access_token={cls.PAGE_TOKEN}'
         r = requests.get(curl)
-        data = r.json()
-        return data
+        return r.json()
 
 
     def fb_get_visitor_number(self):

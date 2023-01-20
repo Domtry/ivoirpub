@@ -22,29 +22,25 @@ class CampagneCtrl:
         object_not_publish = []
         message = []
 
-        for item in campagnes :
+        for item in campagnes:
             today_now = datetime.now()
             date = today_now.date()
 
-            if item.close_date == date :
-                if not item.state :
+            if not item.state:
+                if item.close_date == date:
                     item.state = True
                     item.save()
-            else :
-                if not item.state :
+                else:
                     posts = Post.objects.filter(campagne=item)
                     dashboard_data.append({'campagne':item, 'post':posts}) 
-        
-        for item in dashboard_data:
-            for els in item['post']:
-                if not els.is_publish :
-                    object_not_publish.append(els)
 
+        for item in dashboard_data:
+            object_not_publish.extend(els for els in item['post'] if not els.is_publish)
         for item in object_not_publish:
             pst_m = item.poste_heure.minute
 
             if pst_m == 0:
-                pst_m = f'00'
+                pst_m = '00'
 
             poseted_date = f'{item.poste_heure.hour}:{pst_m}'
             today_now = datetime.now()
@@ -73,15 +69,14 @@ class CampagneCtrl:
                     item.save()
                     message.append(f'{page.name}({item.title})')
 
-        if len(message) != 0 :
+        if message:
             send_sms(message)
         return message
 
 
     @classmethod
     def generate_long_access_token(cls, token):
-        respnse = FbGraphAPI.fb_generate_long_access_tk(token)
-        return respnse
+        return FbGraphAPI.fb_generate_long_access_tk(token)
     
 
     @classmethod
@@ -91,8 +86,7 @@ class CampagneCtrl:
             FbGraphAPI.PAGE_ID = data['page_id']
             account = Account.objects.get(id=data['account_id'])
             graph_api = FbGraphAPI(account)
-            response = graph_api.fb_get_page_detail()
-            return response
+            return graph_api.fb_get_page_detail()
         except Exception as error:
             return {"error": f"{error}"}
 

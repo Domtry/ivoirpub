@@ -16,5 +16,3 @@ def send_sms(msg):
         pass
 
 
-if __name__ == "__main__":
-    pass
